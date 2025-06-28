@@ -1,0 +1,983 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>ジャンル別URLサムネイルリスト with お気に入り</title>
+  <style>
+    body {
+      font-family: system-ui, sans-serif;
+      background: #fafbfc;
+      color: #222;
+      margin: 0;
+      padding: 0;
+    }
+    body.dark {
+      background: #23272f;
+      color: #eee;
+    }
+    .main-wrapper {
+      max-width: 800px;
+      margin: 32px auto 0 auto;
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 4px 24px #0001;
+      padding: 2em 1.5em 2em 1.5em;
+      min-height: 90vh;
+      position: relative;
+    }
+    body.dark .main-wrapper {
+      background: #1b1e24;
+      box-shadow: 0 4px 24px #0005;
+    }
+    h1 {
+      font-size: 1.96em; /* 1.4倍に拡大 */
+      margin: 0 0 1.3em 0;
+      letter-spacing: 0.04em;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      text-align: center;
+    }
+    .favicon-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px 16px;
+      margin-bottom: 22px;
+      padding: 4px 0 4px 0;
+      justify-content: center; /* 追加: 中央揃え */
+    }
+    .favicon-link {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: #f3f4f6;
+      box-shadow: 0 1px 4px #0001;
+      transition: background 0.18s, box-shadow 0.18s;
+      margin: 0;
+      text-decoration: none;
+    }
+    .favicon-link:hover {
+      background: #ffeaa7;
+      box-shadow: 0 2px 8px #FFD60044;
+    }
+    body.dark .favicon-link {
+      background: #23272f;
+      box-shadow: 0 1px 4px #0004;
+    }
+    body.dark .favicon-link:hover {
+      background: #333a44;
+      box-shadow: 0 2px 8px #FFD60044;
+    }
+    .favicon-img {
+      width: 20px;
+      height: 20px;
+      display: block;
+      border-radius: 4px;
+    }
+    .topbar-flex {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 18px;
+      width: 100%;
+    }
+    .dark-toggle {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      user-select: none;
+      margin: 0;
+    }
+    .favorite-toggle-wrap {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      position: relative;
+    }
+    .favorite-toggle-area {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      flex: 1 1 auto;
+    }
+    .toggle-switch {
+      position: relative;
+      display: inline-block;
+      width: 38px;
+      height: 22px;
+      margin: 0 2px;
+    }
+    .toggle-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+      pointer-events: none;
+    }
+    .toggle-slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: #a4baff;
+      border-radius: 22px;
+      transition: background 0.2s;
+    }
+    .toggle-slider:before {
+      content: "";
+      position: absolute;
+      left: 3px; top: 3px;
+      width: 16px; height: 16px;
+      background: #fff;
+      border-radius: 50%;
+      transition: transform 0.2s, background 0.2s;
+      box-shadow: 0 1px 4px #0002;
+    }
+    .toggle-switch input:checked + .toggle-slider {
+      background: #3476e6;
+    }
+    .toggle-switch input:checked + .toggle-slider:before {
+      transform: translateX(16px);
+      background: #8ecaff;
+    }
+    .favorite-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0 0.2em;
+      margin-left: 0.5em;
+      display: flex;
+      align-items: center;
+      transition: color 0.2s, transform 0.15s;
+      font-size: 1.5em;
+      color: #bbb;
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+    .favorite-btn.faved {
+      color: #FFD600;
+      text-shadow: 0 0 4px #FFD60088;
+    }
+    .favorite-btn:hover,
+    .favorite-btn:focus-visible {
+      outline: none;
+      transform: scale(1.25) translateY(-40%);
+    }
+    body.dark .favorite-btn,
+    body.dark .favorite-toggle-btn {
+      color: #666;
+    }
+    body.dark .favorite-btn.faved,
+    body.dark .favorite-toggle-btn.on {
+      color: #FFD600;
+      text-shadow: 0 0 6px #FFD60055;
+    }
+    body.dark .favorite-btn:hover,
+    body.dark .favorite-btn:focus-visible {
+      outline: none;
+      transform: scale(1.25) translateY(-40%);
+    }
+    .favorite-btn svg, .favorite-toggle-btn svg {
+      width: 1em; height: 1em;
+      display: block;
+    }
+    .favorite-toggle-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 1.7em;
+      color: #bbb;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      transition: color 0.2s, opacity 0.2s;
+      opacity: 1;
+      position: relative;
+      z-index: 12;
+    }
+    .favorite-toggle-btn.on {
+      color: #FFD600;
+      text-shadow: 0 0 6px #FFD60055;
+    }
+    .favorite-toggle-btn:disabled {
+      color: #bbb;
+      opacity: 0.4;
+      cursor: not-allowed;
+      text-shadow: none;
+    }
+    .genre-header {
+      font-weight: bold;
+      font-size: 1.08em;
+      cursor: pointer;
+      padding: 0.7em 0.4em 0.7em 0.9em;
+      border-radius: 7px 7px 0 0;
+      background: #f7f7f7;
+      user-select: none;
+      transition: background 0.17s;
+      margin-bottom: 0;
+    }
+    .genre-header.shrink.genre1 { background: #fff9e0; }
+    .genre-header.shrink.genre2 { background: #e3f6f1; }
+    .genre-header.shrink.genre3 { background: #e7f1fe; }
+    .genre-header.shrink.genre4 { background: #ffe5f0; }
+    .genre-header.shrink.genre5 { background: #ffe9e5; }
+    .genre-header.shrink.genre6 { background: #eae5ff; }
+    .genre-header.shrink.genre7 { background: #f5f5e5; }
+    .genre-header.shrink.genre8 { background: #e5f3ff; }
+    .genre-header.genre1 { background: #f7f7f7; }
+    .genre-header.genre2 { background: #f7f7f7; }
+    .genre-header.genre3 { background: #f7f7f7; }
+    .genre-header.genre4 { background: #f7f7f7; }
+    .genre-header.genre5 { background: #f7f7f7; }
+    .genre-header.genre6 { background: #f7f7f7; }
+    .genre-header.genre7 { background: #f7f7f7; }
+    .genre-header.genre8 { background: #f7f7f7; }
+    body.dark .genre-header { background: #23272f; }
+    body.dark .genre-header.shrink.genre1 { background: #544800; }
+    body.dark .genre-header.shrink.genre2 { background: #004d3a; }
+    body.dark .genre-header.shrink.genre3 { background: #00305f; }
+    body.dark .genre-header.shrink.genre4 { background: #5e0032; }
+    body.dark .genre-header.shrink.genre5 { background: #5e1d00; }
+    body.dark .genre-header.shrink.genre6 { background: #2e005e; }
+    body.dark .genre-header.shrink.genre7 { background: #545400; }
+    body.dark .genre-header.shrink.genre8 { background: #00375e; }
+    .genre-line {
+      height: 3px;
+      border-radius: 2px;
+      margin: 0 0 13px 0;
+      background: #eee;
+    }
+    .genre1 { background: linear-gradient(90deg,#FFD600,#FFD60088); }
+    .genre2 { background: linear-gradient(90deg,#00b894,#00b89466); }
+    .genre3 { background: linear-gradient(90deg,#0984e3,#0984e344); }
+    .genre4 { background: linear-gradient(90deg,#fd79a8,#fd79a855); }
+    .genre5 { background: linear-gradient(90deg,#e17055,#e1705555); }
+    .genre6 { background: linear-gradient(90deg,#6c5ce7,#6c5ce744); }
+    .genre7 { background: linear-gradient(90deg,#b2bec3,#b2bec344); }
+    .genre8 { background: linear-gradient(90deg,#74b9ff,#74b9ff44); }
+    .url-list {
+      overflow: hidden;
+      max-height: 0;
+      opacity: 0;
+      transition: max-height 0.24s cubic-bezier(.55,.09,.68,.53), opacity 0.22s;
+      margin-bottom: 0.7em;
+      padding-left: 1.2em;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .url-list.open {
+      opacity: 1;
+      max-height: none;
+      margin-bottom: 0.7em;
+    }
+    .url-link-area {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      background: #f6f8fa;
+      border-radius: 7px;
+      min-height: 54px;
+      margin-bottom: 0;
+      text-decoration: none;
+      color: inherit;
+      box-shadow: 0 1px 4px #0001;
+      padding: 8px 12px 8px 8px;
+      transition: background 0.15s, box-shadow 0.15s;
+    }
+    .url-link-area:hover {
+      background: #fff;
+      box-shadow: 0 2px 12px #eeeeee44;
+    }
+    body.dark .url-link-area {
+      background: #23272f;
+      box-shadow: 0 1px 4px #0005;
+    }
+    body.dark .url-link-area:hover {
+      background: #2c2f36;
+      box-shadow: 0 2px 12px #eeeeee22;
+    }
+    .url-thumb {
+      width: 44px; height: 44px;
+      object-fit: cover;
+      border-radius: 7px;
+      background: #eee;
+      box-shadow: 0 1px 4px #0001;
+      margin-right: 2px;
+    }
+    .url-info {
+      flex: 1 1 auto;
+      min-width: 0;
+      margin-right: 2.2em;
+    }
+    .url-title {
+      font-weight: bold;
+      font-size: 1.06em;
+      margin-bottom: 2px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .url-desc {
+      font-size: 0.98em;
+      color: #666;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    body.dark .url-desc {
+      color: #aaa;
+    }
+    .bottom-padding { height: 95px; }
+    .fav-message-box {
+      position: absolute;
+      min-width: 180px;
+      background: #fff;
+      color: #222;
+      border-radius: 8px;
+      box-shadow: 0 4px 16px #0002;
+      border: 1px solid #e0e0e0;
+      z-index: 1000;
+      padding: 1em 1.2em 1em 1.2em;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      animation: fadeIn 0.18s;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px);}
+      to { opacity: 1; transform: translateY(0);}
+    }
+    .fav-message-title {
+      font-weight: bold;
+      font-size: 1.1em;
+      margin-bottom: 0.7em;
+      letter-spacing: 0.03em;
+    }
+    .fav-message-btns {
+      display: flex;
+      gap: 1em;
+      margin-top: 0.1em;
+    }
+    .fav-mode-btn {
+      padding: 0.35em 1.4em;
+      border-radius: 5px;
+      border: 2px solid transparent;
+      background: #f4f4f4;
+      color: #333;
+      font-weight: bold;
+      font-size: 1em;
+      cursor: pointer;
+      transition: border 0.17s, background 0.16s, color 0.16s;
+    }
+    .fav-mode-btn.on {
+      border: 2px solid #FFD600;
+      background: #fffbe9;
+      color: #c09700;
+    }
+    .fav-mode-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    body.dark .fav-message-box {
+      background: #23272f;
+      color: #f8f8f8;
+      border: 1px solid #333a44;
+      box-shadow: 0 4px 16px #0006;
+    }
+    body.dark .fav-mode-btn {
+      background: #2d3139;
+      color: #eee;
+    }
+    body.dark .fav-mode-btn.on {
+      background: #353424;
+      color: #FFD600;
+      border: 2px solid #FFD600;
+    }
+    .fixed-buttons {
+      position: fixed;
+      right: 20px;
+      bottom: 22px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      z-index: 100;
+    }
+    .fixed-buttons button {
+      background: #FFD600;
+      color: #222;
+      border: none;
+      border-radius: 6px;
+      font-weight: bold;
+      font-size: 1em;
+      padding: 0.7em 1.6em;
+      cursor: pointer;
+      box-shadow: 0 2px 8px #FFD60044;
+      transition: background 0.18s, color 0.18s;
+    }
+    .fixed-buttons button:hover {
+      background: #ffeaa7;
+      color: #b8860b;
+    }
+    body.dark .fixed-buttons button {
+      background: #FFD600;
+      color: #23272f;
+    }
+    body.dark .fixed-buttons button:hover {
+      background: #ffeaa7;
+      color: #b8860b;
+    }
+    /* --- 追加: タイトル＋ファビコン中央揃え --- */
+    .main-title-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      margin-bottom: 1.3em;
+      text-align: center;
+    }
+    .main-title-row .main-title-favicon {
+      width: 32px;
+      height: 32px;
+      display: inline-block;
+      vertical-align: middle;
+    }
+    .main-title-row .main-title-favicon img {
+      width: 100%;
+      height: 100%;
+      border-radius: 8px;
+      display: block;
+    }
+    .main-title-row .main-title-text {
+      font-size: 1.96em;
+      font-weight: bold;
+      letter-spacing: 0.04em;
+      line-height: 1.2;
+    }
+    @media (max-width: 900px) {
+      .main-wrapper { max-width: 97vw; }
+    }
+    @media (max-width: 600px) {
+      .main-wrapper { padding: 0.5em 0.3em 2em 0.3em; }
+      .fixed-buttons { right: 6px; }
+      .main-title-row { gap: 12px; }
+      .main-title-row .main-title-text { font-size: 1.3em; }
+    }
+  </style>
+</head>
+<body>
+  <div class="main-wrapper">
+    <div class="main-title-row">
+      <span class="main-title-favicon"><img src="https://www.google.com/favicon.ico" alt="オリジナルアイコン"></span>
+      <span class="main-title-text">ジャンル別URLサムネイルリスト</span>
+    </div>
+    <div class="favicon-row" id="favicon-row"></div>
+    <div class="topbar-flex">
+      <div class="dark-toggle">
+        <span style="font-size:1.2em; margin-right:4px;">🔆</span>
+        <label class="toggle-switch">
+          <input type="checkbox" id="darkModeToggle">
+          <span class="toggle-slider"></span>
+        </label>
+        <span style="font-size:1.2em; margin-left:4px;">🌙</span>
+      </div>
+      <div class="favorite-toggle-area">
+        <span class="favorite-toggle-wrap" id="favToggleWrap">
+          <button id="favoriteToggleBtn" class="favorite-toggle-btn" title="お気に入りのみ表示">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 17.77L5.18 21.5l1.31-7.66L1.5 9.97l7.76-1.13L12 2.5l2.74 6.34 7.76 1.13-5 4.87 1.31 7.66z"/>
+            </svg>
+          </button>
+        </span>
+      </div>
+    </div>
+    <div id="container"></div>
+    <div class="bottom-padding"></div>
+  </div>
+  <div class="fixed-buttons">
+    <button id="closeAllBtn">全て閉じる</button>
+    <button id="toTopBtn">TOPへ</button>
+  </div>
+  <script>
+    // --- データ定義 ---
+    const favicons = [
+      { url: "https://www.nhk.or.jp/", favicon: "https://www.nhk.or.jp/favicon.ico" },
+      { url: "https://news.yahoo.co.jp/", favicon: "https://news.yahoo.co.jp/favicon.ico" },
+      { url: "https://www.google.com/", favicon: "https://www.google.com/favicon.ico" },
+      { url: "https://www.bing.com/", favicon: "https://www.bing.com/favicon.ico" },
+      { url: "https://www.youtube.com/", favicon: "https://www.youtube.com/favicon.ico" },
+      { url: "https://www.nicovideo.jp/", favicon: "https://www.nicovideo.jp/favicon.ico" },
+      { url: "https://www.wikipedia.org/", favicon: "https://www.wikipedia.org/static/favicon/wikipedia.ico" },
+      { url: "https://www.amazon.co.jp/", favicon: "https://www.amazon.co.jp/favicon.ico" },
+      { url: "https://www.rakuten.co.jp/", favicon: "https://www.rakuten.co.jp/favicon.ico" },
+      { url: "https://www.yahoo.co.jp/", favicon: "https://www.yahoo.co.jp/favicon.ico" },
+      { url: "https://twitter.com/", favicon: "https://twitter.com/favicon.ico" }
+    ];
+    const genreColorClass = [ 'genre1', 'genre2', 'genre3', 'genre4', 'genre5', 'genre6', 'genre7', 'genre8' ];
+    const data = [
+      {
+        genre: "ニュース",
+        colorClass: "genre1",
+        urls: [
+          {
+            title: "NHK",
+            url: "https://www.nhk.or.jp/",
+            thumb: "https://www3.nhk.or.jp/news/html/20240601/K10014499071_2406011931_0601193234_01_02.jpg",
+            desc: "日本の公共放送局による公式ニュースサイト。"
+          },
+          {
+            title: "Yahoo!ニュース",
+            url: "https://news.yahoo.co.jp/",
+            thumb: "https://s.yimg.jp/images/top/sp2/cmn/logo-170x35.png",
+            desc: "主要なニュースや話題をまとめてチェックできるポータルサイト。"
+          }
+        ]
+      },
+      {
+        genre: "検索エンジン",
+        colorClass: "genre2",
+        urls: [
+          {
+            title: "Google",
+            url: "https://www.google.com/",
+            thumb: "https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_92x30dp.png",
+            desc: "世界最大の検索エンジン。"
+          },
+          {
+            title: "Bing",
+            url: "https://www.bing.com/",
+            thumb: "https://www.bing.com/th?id=OHR.BingHomepage_FR-FR7279791497_1920x1080.jpg&rf=LaDigue_1920x1080.jpg&pid=hp",
+            desc: "Microsoftが提供する検索サービス。"
+          }
+        ]
+      },
+      {
+        genre: "動画サイト",
+        colorClass: "genre3",
+        urls: [
+          {
+            title: "YouTube",
+            url: "https://www.youtube.com/",
+            thumb: "https://www.youtube.com/img/desktop/yt_1200.png",
+            desc: "世界最大の動画共有サイト。"
+          }
+        ]
+      },
+      {
+        genre: "買い物",
+        colorClass: "genre4",
+        urls: [
+          {
+            title: "Amazon",
+            url: "https://www.amazon.co.jp/",
+            thumb: "https://www.amazon.co.jp/favicon.ico",
+            desc: "日本最大級のネット通販サイト。"
+          }
+        ]
+      },
+      {
+        genre: "辞書・百科事典",
+        colorClass: "genre5",
+        urls: [
+          {
+            title: "Wikipedia",
+            url: "https://www.wikipedia.org/",
+            thumb: "https://www.wikipedia.org/static/favicon/wikipedia.ico",
+            desc: "世界最大のオンライン百科事典。"
+          }
+        ]
+      },
+      {
+        genre: "SNS",
+        colorClass: "genre6",
+        urls: [
+          {
+            title: "Twitter",
+            url: "https://twitter.com/",
+            thumb: "https://twitter.com/favicon.ico",
+            desc: "世界中で使われているSNS。"
+          }
+        ]
+      },
+      {
+        genre: "動画（国内）",
+        colorClass: "genre7",
+        urls: [
+          {
+            title: "ニコニコ動画",
+            url: "https://www.nicovideo.jp/",
+            thumb: "https://www.nicovideo.jp/favicon.ico",
+            desc: "日本最大級の動画共有サイト。"
+          }
+        ]
+      },
+      {
+        genre: "ショッピング（国内）",
+        colorClass: "genre8",
+        urls: [
+          {
+            title: "楽天市場",
+            url: "https://www.rakuten.co.jp/",
+            thumb: "https://www.rakuten.co.jp/favicon.ico",
+            desc: "日本最大級の総合ショッピングモール。"
+          }
+        ]
+      }
+    ];
+
+    // --- お気に入り管理 ---
+    function getFavorites() {
+      try {
+        return JSON.parse(localStorage.getItem('favorites') || '[]');
+      } catch { return []; }
+    }
+    function setFavorites(arr) {
+      localStorage.setItem('favorites', JSON.stringify(arr));
+    }
+    function isFaved(url) {
+      return getFavorites().includes(url);
+    }
+    function toggleFav(url) {
+      let favs = getFavorites();
+      if (favs.includes(url)) {
+        favs = favs.filter(u => u !== url);
+      } else {
+        favs.push(url);
+      }
+      setFavorites(favs);
+    }
+
+    // --- ファビコン表示 ---
+    const faviconRow = document.getElementById('favicon-row');
+    favicons.forEach(item => {
+      const a = document.createElement('a');
+      a.className = 'favicon-link';
+      a.href = item.url;
+      a.target = '_blank';
+      a.rel = 'noopener noreferrer';
+      const img = document.createElement('img');
+      img.className = 'favicon-img';
+      img.src = item.favicon || '';
+      img.alt = 'favicon';
+      img.onerror = function() { this.style.display = 'none'; };
+      a.appendChild(img);
+      faviconRow.appendChild(a);
+    });
+
+    // --- 展開状態管理 ---
+    let expandedGenres = new Set();
+
+    // --- メインリスト描画 ---
+    const container = document.getElementById('container');
+    let showFavOnly = false;
+
+    function renderList() {
+      const prevExpanded = new Set(expandedGenres);
+
+      container.innerHTML = '';
+      expandedGenres.clear();
+      const favs = getFavorites();
+      let _data = data;
+      if (showFavOnly) {
+        _data = data.map(group => {
+          const urls = group.urls.filter(item => favs.includes(item.url));
+          return {...group, urls};
+        }).filter(group => group.urls.length > 0);
+      }
+      _data.forEach((group, idx) => {
+        const genreDiv = document.createElement('div');
+        genreDiv.className = 'genre';
+
+        const colorClass = group.colorClass || genreColorClass[idx % genreColorClass.length];
+
+        const header = document.createElement('div');
+        header.className = `genre-header ${colorClass}`;
+        header.textContent = group.genre;
+        header.setAttribute('data-idx', idx);
+
+        const line = document.createElement('div');
+        line.className = `genre-line ${colorClass}`;
+
+        const urlList = document.createElement('div');
+        urlList.className = 'url-list';
+
+        group.urls.forEach(item => {
+          const urlLink = document.createElement('a');
+          urlLink.className = 'url-link-area';
+          urlLink.href = item.url;
+          urlLink.target = '_blank';
+          urlLink.rel = 'noopener noreferrer';
+
+          const thumb = document.createElement('img');
+          thumb.className = 'url-thumb';
+          thumb.src = item.thumb;
+          thumb.alt = 'thumbnail';
+
+          const infoDiv = document.createElement('div');
+          infoDiv.className = 'url-info';
+          const title = document.createElement('div');
+          title.className = 'url-title';
+          title.textContent = item.title;
+          const desc = document.createElement('div');
+          desc.className = 'url-desc';
+          desc.textContent = item.desc || '';
+          infoDiv.appendChild(title);
+          infoDiv.appendChild(desc);
+
+          urlLink.appendChild(thumb);
+          urlLink.appendChild(infoDiv);
+
+          const favBtn = document.createElement('button');
+          favBtn.type = 'button';
+          favBtn.className = 'favorite-btn' + (isFaved(item.url) ? ' faved' : '');
+          favBtn.title = isFaved(item.url) ? "お気に入り解除" : "お気に入り追加";
+          favBtn.innerHTML = `
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 17.77L5.18 21.5l1.31-7.66L1.5 9.97l7.76-1.13L12 2.5l2.74 6.34 7.76 1.13-5 4.87 1.31 7.66z"/>
+            </svg>
+          `;
+          favBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            toggleFav(item.url);
+            this.classList.toggle('faved', isFaved(item.url));
+            this.title = isFaved(item.url) ? "お気に入り解除" : "お気に入り追加";
+            updateFavToggleBtn();
+          });
+          urlLink.appendChild(favBtn);
+
+          urlList.appendChild(urlLink);
+        });
+
+        genreDiv.appendChild(header);
+        genreDiv.appendChild(urlList);
+        genreDiv.appendChild(line);
+
+        container.appendChild(genreDiv);
+
+        const globalIdx = getGlobalGenreIndex(group.genre);
+        let shouldOpen = prevExpanded.has(globalIdx) || expandedGenres.has(globalIdx);
+
+        if (shouldOpen) {
+          urlList.classList.add('open');
+          urlList.style.opacity = 1;
+          urlList.style.maxHeight = urlList.scrollHeight + "px";
+          header.classList.add('shrink');
+          header.classList.add(colorClass);
+          expandedGenres.add(globalIdx);
+
+          urlList.addEventListener('transitionend', function handler(e) {
+            if (e.propertyName === 'max-height' && urlList.classList.contains('open')) {
+              urlList.style.maxHeight = "none";
+              urlList.removeEventListener('transitionend', handler);
+            }
+          });
+        } else {
+          urlList.classList.remove('open');
+          urlList.style.opacity = 0;
+          urlList.style.maxHeight = "0";
+          header.classList.remove('shrink');
+          header.classList.remove(colorClass);
+          expandedGenres.delete(globalIdx);
+        }
+
+        header.addEventListener('click', () => {
+          const isOpen = urlList.classList.contains('open');
+          if (isOpen) {
+            urlList.style.maxHeight = urlList.scrollHeight + "px";
+            urlList.offsetHeight;
+            urlList.style.maxHeight = "0";
+            urlList.style.opacity = 0;
+            urlList.classList.remove('open');
+            header.classList.remove('shrink');
+            header.classList.remove(colorClass);
+            expandedGenres.delete(globalIdx);
+          } else {
+            urlList.classList.add('open');
+            urlList.style.opacity = 1;
+            urlList.style.maxHeight = "0";
+            urlList.offsetHeight;
+            urlList.style.maxHeight = urlList.scrollHeight + "px";
+            header.classList.add('shrink');
+            header.classList.add(colorClass);
+            expandedGenres.add(globalIdx);
+
+            urlList.addEventListener('transitionend', function handler(e) {
+              if (e.propertyName === 'max-height' && urlList.classList.contains('open')) {
+                urlList.style.maxHeight = "none";
+                urlList.removeEventListener('transitionend', handler);
+              }
+            });
+          }
+        });
+      });
+    }
+
+    function getGlobalGenreIndex(genreName) {
+      for (let i = 0; i < data.length; ++i) {
+        if (data[i].genre === genreName) return i;
+      }
+      return -1;
+    }
+
+    const favToggleBtn = document.getElementById('favoriteToggleBtn');
+    const favToggleWrap = document.getElementById('favToggleWrap');
+    let favMsgBox = null;
+
+    function updateFavToggleBtn() {
+      const favs = getFavorites();
+      favToggleBtn.classList.toggle('on', showFavOnly);
+      favToggleBtn.title = favs.length === 0
+        ? "お気に入りがありません"
+        : "お気に入り表示切替";
+    }
+
+    function closeFavMsgBox() {
+      if (favMsgBox) {
+        favMsgBox.remove();
+        favMsgBox = null;
+        document.removeEventListener('mousedown', favMsgBoxOutsideListener, true);
+        document.removeEventListener('touchstart', favMsgBoxOutsideListener, true);
+        document.removeEventListener('keydown', favMsgBoxEscapeListener, true);
+      }
+    }
+    function favMsgBoxOutsideListener(e) {
+      if (favMsgBox && !favMsgBox.contains(e.target) && e.target !== favToggleBtn) {
+        closeFavMsgBox();
+      }
+    }
+    function favMsgBoxEscapeListener(e) {
+      if (e.key === "Escape") closeFavMsgBox();
+    }
+
+    favToggleBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      if (favMsgBox) {
+        closeFavMsgBox();
+        return;
+      }
+      favMsgBox = document.createElement('div');
+      favMsgBox.className = 'fav-message-box';
+      favMsgBox.tabIndex = -1;
+      const favs = getFavorites();
+      favMsgBox.innerHTML = `
+        <div class="fav-message-title">お気に入りを表示</div>
+        <div class="fav-message-btns">
+          <button class="fav-mode-btn${showFavOnly ? ' on' : ''}" data-mode="on"${favs.length === 0 ? ' disabled' : ''}>ON</button>
+          <button class="fav-mode-btn${!showFavOnly ? ' on' : ''}" data-mode="off">OFF</button>
+        </div>
+      `;
+      favToggleWrap.appendChild(favMsgBox);
+
+      const btnRect = favToggleBtn.getBoundingClientRect();
+      const wrapRect = favToggleWrap.getBoundingClientRect();
+      favMsgBox.style.left = (favToggleBtn.offsetLeft - favMsgBox.offsetWidth + favToggleBtn.offsetWidth) + "px";
+      favMsgBox.style.top = (favToggleBtn.offsetTop - favMsgBox.offsetHeight) + "px";
+      setTimeout(() => {
+        const boxRect = favMsgBox.getBoundingClientRect();
+        if (boxRect.top < 0) {
+          favMsgBox.style.top = (favToggleBtn.offsetTop + favToggleBtn.offsetHeight + 4) + "px";
+        }
+        if (boxRect.left < 0) {
+          favMsgBox.style.left = "0px";
+        }
+      }, 0);
+
+      setTimeout(()=>favMsgBox && favMsgBox.focus(), 10);
+
+      favMsgBox.querySelectorAll('.fav-mode-btn').forEach(btn => {
+        btn.addEventListener('click', (ev) => {
+          ev.preventDefault();
+          const mode = btn.getAttribute('data-mode');
+          const favs = getFavorites();
+          if (mode === "on" && favs.length === 0) return;
+          showFavOnly = (mode === 'on');
+          renderList();
+          updateFavToggleBtn();
+          closeFavMsgBox();
+        });
+      });
+
+      document.addEventListener('mousedown', favMsgBoxOutsideListener, true);
+      document.addEventListener('touchstart', favMsgBoxOutsideListener, true);
+      document.addEventListener('keydown', favMsgBoxEscapeListener, true);
+    });
+
+    document.getElementById('closeAllBtn').addEventListener('click', () => {
+      const openLists = Array.from(document.querySelectorAll('.url-list.open'));
+      if (openLists.length === 0) {
+        expandedGenres.clear();
+        renderList();
+        closeFavMsgBox();
+        return;
+      }
+      let finished = 0;
+      openLists.forEach(list => {
+        list.style.maxHeight = list.scrollHeight +"px";
+        list.offsetHeight;
+        list.style.maxHeight = "0";
+        list.style.opacity = "0";
+        list.classList.remove('open');
+        const genreDiv = list.parentElement;
+        const header = genreDiv.querySelector('.genre-header');
+        if (header) {
+          genreColorClass.forEach(c => header.classList.remove('shrink', c));
+        }
+        list.addEventListener('transitionend', function handler(e) {
+          if (e.propertyName === "max-height") {
+            finished++;
+            list.removeEventListener('transitionend', handler);
+            if (finished === openLists.length) {
+              expandedGenres.clear();
+              renderList();
+              closeFavMsgBox();
+            }
+          }
+        });
+      });
+    });
+
+    document.getElementById('toTopBtn').addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      closeFavMsgBox();
+    });
+
+    // --- ダークモード状態の保存と復元 ---
+    const darkToggle = document.getElementById('darkModeToggle');
+    // localStorageから状態を復元
+    const darkMode = localStorage.getItem('darkMode') === 'true';
+    document.body.classList.toggle('dark', darkMode);
+    darkToggle.checked = darkMode;
+
+    darkToggle.addEventListener('change', function() {
+      if (this.checked) {
+        document.body.classList.add('dark');
+        localStorage.setItem('darkMode', 'true');
+      } else {
+        document.body.classList.remove('dark');
+        localStorage.setItem('darkMode', 'false');
+      }
+      closeFavMsgBox();
+    });
+
+    renderList();
+    updateFavToggleBtn();
+
+    window.addEventListener('storage', () => {
+      renderList();
+      updateFavToggleBtn();
+      closeFavMsgBox();
+      // ダークモードも他タブで切り替えたら反映
+      const darkMode = localStorage.getItem('darkMode') === 'true';
+      document.body.classList.toggle('dark', darkMode);
+      darkToggle.checked = darkMode;
+    });
+  </script>
+</body>
+</html>
