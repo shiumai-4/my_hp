@@ -2,8 +2,8 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>ジャンル別URLサムネイルリスト with お気に入り</title>
-  <meta name="viewport" content=""width=divice-widht, intial-scale="1">
+  <title>URL紹介webページ</title>
+  <meta name="viewport" content=""width=divice-widht, intial-scale="2">
   <style>
     body {
       font-family: system-ui, sans-serif;
@@ -44,7 +44,7 @@
       display: flex;
       flex-wrap: wrap;
       gap: 12px 16px;
-      margin-bottom: 22px;
+      margin-bottom: 6px;
       padding: 4px 0 4px 0;
       justify-content: center; /* 追加: 中央揃え */
     }
@@ -63,15 +63,15 @@
     }
     .favicon-link:hover {
       background: #ffeaa7;
-      box-shadow: 0 2px 8px #FFD60044;
+      box-shadow: 0 0px 8px #FFD60044;
     }
     body.dark .favicon-link {
-      background: #23272f;
+      background: #313948;
       box-shadow: 0 1px 4px #0004;
     }
     body.dark .favicon-link:hover {
-      background: #333a44;
-      box-shadow: 0 2px 8px #FFD60044;
+      background: #23272e;
+      box-shadow: 0 0px 8px #ffd50086;
     }
     .favicon-img {
       width: 20px;
@@ -228,7 +228,7 @@
     .genre-header.shrink.genre4 { background: #ffe5f0; }
     .genre-header.shrink.genre5 { background: #ffe9e5; }
     .genre-header.shrink.genre6 { background: #eae5ff; }
-    .genre-header.shrink.genre7 { background: #f5f5e5; }
+    .genre-header.shrink.genre7 { background: #dee1e3; }
     .genre-header.shrink.genre8 { background: #e5f3ff; }
     .genre-header.genre1 { background: #f7f7f7; }
     .genre-header.genre2 { background: #f7f7f7; }
@@ -245,7 +245,7 @@
     body.dark .genre-header.shrink.genre4 { background: #5e0032; }
     body.dark .genre-header.shrink.genre5 { background: #5e1d00; }
     body.dark .genre-header.shrink.genre6 { background: #2e005e; }
-    body.dark .genre-header.shrink.genre7 { background: #545400; }
+    body.dark .genre-header.shrink.genre7 { background: #373734; }
     body.dark .genre-header.shrink.genre8 { background: #00375e; }
     .genre-line {
       height: 3px;
@@ -367,7 +367,7 @@
       margin-top: 0.1em;
     }
     .fav-mode-btn {
-      padding: 0.35em 1.4em;
+      padding: 0.35em 1em;
       border-radius: 5px;
       border: 2px solid transparent;
       background: #f4f4f4;
@@ -440,7 +440,7 @@
       align-items: center;
       justify-content: center;
       gap: 20px;
-      margin-bottom: 1.3em;
+      margin-bottom: 0.6em;
       text-align: center;
     }
     .main-title-row .main-title-favicon {
@@ -456,7 +456,7 @@
       display: block;
     }
     .main-title-row .main-title-text {
-      font-size: 1.96em;
+      font-size: 2.0em;
       font-weight: bold;
       letter-spacing: 0.04em;
       line-height: 1.2;
@@ -468,7 +468,7 @@
       .main-wrapper { padding: 0.5em 0.3em 2em 0.3em; }
       .fixed-buttons { right: 6px; }
       .main-title-row { gap: 12px; }
-      .main-title-row .main-title-text { font-size: 1.3em; }
+      .main-title-row .main-title-text { font-size: 1.7em; }
     }
   </style>
 </head>
@@ -476,7 +476,7 @@
   <div class="main-wrapper">
     <div class="main-title-row">
       <span class="main-title-favicon"><img src="https://www.google.com/favicon.ico" alt="オリジナルアイコン"></span>
-      <span class="main-title-text">ジャンル別URLサムネイルリスト</span>
+      <span class="main-title-text">shiumai_4 のリンク集</span>
     </div>
     <div class="favicon-row" id="favicon-row"></div>
     <div class="topbar-flex">
@@ -508,125 +508,73 @@
   <script>
     // --- データ定義 ---
     const favicons = [
-      { url: "https://www.nhk.or.jp/", favicon: "https://www.nhk.or.jp/favicon.ico" },
-      { url: "https://news.yahoo.co.jp/", favicon: "https://news.yahoo.co.jp/favicon.ico" },
-      { url: "https://www.google.com/", favicon: "https://www.google.com/favicon.ico" },
-      { url: "https://www.bing.com/", favicon: "https://www.bing.com/favicon.ico" },
-      { url: "https://www.youtube.com/", favicon: "https://www.youtube.com/favicon.ico" },
-      { url: "https://www.nicovideo.jp/", favicon: "https://www.nicovideo.jp/favicon.ico" },
-      { url: "https://www.wikipedia.org/", favicon: "https://www.wikipedia.org/static/favicon/wikipedia.ico" },
-      { url: "https://www.amazon.co.jp/", favicon: "https://www.amazon.co.jp/favicon.ico" },
-      { url: "https://www.rakuten.co.jp/", favicon: "https://www.rakuten.co.jp/favicon.ico" },
-      { url: "https://www.yahoo.co.jp/", favicon: "https://www.yahoo.co.jp/favicon.ico" },
-      { url: "https://twitter.com/", favicon: "https://twitter.com/favicon.ico" }
+      { url: "https://www.youtube.com/@shiumai_4", favicon: "https://www.youtube.com/favicon.ico" },
+      { url: "https://x.com/4shiumai?s=21&t=iP-hsmhiY41Q6gEwImzbwA", favicon: "https://twitter.com/favicon.ico" },
+      { url: "https://github.com/shiumai-4", favicon: "https://github.com/favicon.ico" },
+      { url: "https://discord.gg/BFGAYAQS2P", favicon: "https://github.com/shiumai-4/my_hp/blob/b94331aa022a2b9c8b790b25e175a7d6b57d2f69/discord-icon-svgrepo-com.png?raw=true" },
+      { url: "https://note.com/shiumai_4/portal", favicon: "https://note.com/favicon.ico" }
+      
     ];
+    // 黄、緑、青、桃、赤、紫、白、水
     const genreColorClass = [ 'genre1', 'genre2', 'genre3', 'genre4', 'genre5', 'genre6', 'genre7', 'genre8' ];
     const data = [
       {
-        genre: "ニュース",
-        colorClass: "genre1",
-        urls: [
-          {
-            title: "NHK",
-            url: "https://www.nhk.or.jp/",
-            thumb: "https://www3.nhk.or.jp/news/html/20240601/K10014499071_2406011931_0601193234_01_02.jpg",
-            desc: "日本の公共放送局による公式ニュースサイト。"
-          },
-          {
-            title: "Yahoo!ニュース",
-            url: "https://news.yahoo.co.jp/",
-            thumb: "https://s.yimg.jp/images/top/sp2/cmn/logo-170x35.png",
-            desc: "主要なニュースや話題をまとめてチェックできるポータルサイト。"
-          }
-        ]
-      },
-      {
-        genre: "検索エンジン",
+        genre: "スプレッドシートゲーム（GoogleSpreadsheet）",
         colorClass: "genre2",
         urls: [
           {
-            title: "Google",
-            url: "https://www.google.com/",
+            title: "マリンスイーパー",
+            url: "https://docs.google.com/spreadsheets/d/1pc6tep0FldRxOvIFjf5cenNBfvXJA5FUc40w-EiWV1Y/edit?usp=sharing",
             thumb: "https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_92x30dp.png",
-            desc: "世界最大の検索エンジン。"
+            desc: "ホロライブ：宝鐘マリンをモチーフにした、マインスイーパー風のパズルゲーム。"
           },
           {
-            title: "Bing",
-            url: "https://www.bing.com/",
+            title: "余の世直し大作戦！",
+            url: "https://docs.google.com/spreadsheets/d/1jdo40wgqaHQlxlTb_mVWYd1yWsH5KMvk1gw2og5PagM/edit?usp=sharing",
             thumb: "https://www.bing.com/th?id=OHR.BingHomepage_FR-FR7279791497_1920x1080.jpg&rf=LaDigue_1920x1080.jpg&pid=hp",
-            desc: "Microsoftが提供する検索サービス。"
-          }
-        ]
-      },
-      {
-        genre: "動画サイト",
-        colorClass: "genre3",
-        urls: [
+            desc: "ホロライブ：百鬼あやめをモチーフにした、ライツアウト風のパズルゲーム。"
+          },
           {
-            title: "YouTube",
-            url: "https://www.youtube.com/",
-            thumb: "https://www.youtube.com/img/desktop/yt_1200.png",
-            desc: "世界最大の動画共有サイト。"
-          }
-        ]
-      },
-      {
-        genre: "買い物",
-        colorClass: "genre4",
-        urls: [
+            title: "Tic Taco Toe Time!",
+            url: "https://docs.google.com/spreadsheets/d/1UdjUmDLIAy6fGwMxcfQyxfyTPXXG0DEpWkTsoujeiJk/edit?usp=sharing",
+            thumb: "https://www.bing.com/th?id=OHR.BingHomepage_FR-FR7279791497_1920x1080.jpg&rf=LaDigue_1920x1080.jpg&pid=hp",
+            desc: "ホロライブ：一伊那尓栖をモチーフにした、◯×ゲーム風のパズルゲーム。対戦もアリ"
+          },
           {
-            title: "Amazon",
-            url: "https://www.amazon.co.jp/",
-            thumb: "https://www.amazon.co.jp/favicon.ico",
-            desc: "日本最大級のネット通販サイト。"
+            title: "凡骨危機一髪",
+            url: "https://docs.google.com/spreadsheets/d/1Pke1rGn-JPKuRVROtK3x6OyqVY5vfzrdbw0zP2KRiwY/edit?usp=sharing",
+            thumb: "https://www.bing.com/th?id=OHR.BingHomepage_FR-FR7279791497_1920x1080.jpg&rf=LaDigue_1920x1080.jpg&pid=hp",
+            desc: "遊戯王系Youtuberの凡骨突撃部隊をモチーフにした対戦型ゲーム。"
           }
         ]
       },
       {
-        genre: "辞書・百科事典",
-        colorClass: "genre5",
-        urls: [
-          {
-            title: "Wikipedia",
-            url: "https://www.wikipedia.org/",
-            thumb: "https://www.wikipedia.org/static/favicon/wikipedia.ico",
-            desc: "世界最大のオンライン百科事典。"
-          }
-        ]
-      },
-      {
-        genre: "SNS",
-        colorClass: "genre6",
-        urls: [
-          {
-            title: "Twitter",
-            url: "https://twitter.com/",
-            thumb: "https://twitter.com/favicon.ico",
-            desc: "世界中で使われているSNS。"
-          }
-        ]
-      },
-      {
-        genre: "動画（国内）",
-        colorClass: "genre7",
-        urls: [
-          {
-            title: "ニコニコ動画",
-            url: "https://www.nicovideo.jp/",
-            thumb: "https://www.nicovideo.jp/favicon.ico",
-            desc: "日本最大級の動画共有サイト。"
-          }
-        ]
-      },
-      {
-        genre: "ショッピング（国内）",
+        genre: "WEBゲーム（HTML)",
         colorClass: "genre8",
         urls: [
           {
-            title: "楽天市場",
-            url: "https://www.rakuten.co.jp/",
-            thumb: "https://www.rakuten.co.jp/favicon.ico",
-            desc: "日本最大級の総合ショッピングモール。"
+            title: "ヘックスグリッドバトル",
+            url: "https://shiumai-4.github.io/hexgridbattle/",
+            thumb: "https://www.nicovideo.jp/favicon.ico",
+            desc: "攻撃カードが尽きないように敵を倒し続けるストラテジーゲーム。"
+          },
+          {
+            title: "EVOGAME",
+            url: "https://shiumai-4.github.io/EvoGame/",
+            thumb: "https://www.nicovideo.jp/favicon.ico",
+            desc: "味方を消されないようにLv1000を目指す半放置シミュレーションゲーム。"
+          }
+        ]
+      },
+      {
+        genre: "その他",
+        colorClass: "genre7",
+        urls: [
+          {
+            title: "shiumai_4のリンク集",
+            url: "https://shiumai-4.github.io/my_hp/",
+            thumb: "https://www.nicovideo.jp/favicon.ico",
+            desc: "shiumai_4が作った色々な作品や関連するリンクを紹介するサイト。このページ。"
           }
         ]
       }
@@ -870,8 +818,8 @@
       favMsgBox.innerHTML = `
         <div class="fav-message-title">お気に入りを表示</div>
         <div class="fav-message-btns">
-          <button class="fav-mode-btn${showFavOnly ? ' on' : ''}" data-mode="on"${favs.length === 0 ? ' disabled' : ''}>ON</button>
-          <button class="fav-mode-btn${!showFavOnly ? ' on' : ''}" data-mode="off">OFF</button>
+          <button class="fav-mode-btn${showFavOnly ? ' on' : ''}" data-mode="on"${favs.length === 0 ? ' disabled' : ''}>ソート</button>
+          <button class="fav-mode-btn${!showFavOnly ? ' on' : ''}" data-mode="off">解除</button>
         </div>
       `;
       favToggleWrap.appendChild(favMsgBox);
