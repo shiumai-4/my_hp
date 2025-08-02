@@ -156,8 +156,8 @@
       color: #bbb;
       position: absolute;
       right: 10px;
-      top: 50%;
-      transform: translateY(-50%);
+      top: 10px; /* 変更: 上からの位置を固定 */
+      transform: none; /* 変更: 垂直位置の調整を削除 */
     }
     .favorite-btn.faved {
       color: #FFD600;
@@ -166,7 +166,7 @@
     .favorite-btn:hover,
     .favorite-btn:focus-visible {
       outline: none;
-      transform: scale(1.25) translateY(-40%);
+      transform: scale(1.25) translateY(-10%);
     }
     body.dark .favorite-btn,
     body.dark .favorite-toggle-btn {
@@ -180,7 +180,7 @@
     body.dark .favorite-btn:hover,
     body.dark .favorite-btn:focus-visible {
       outline: none;
-      transform: scale(1.25) translateY(-40%);
+      transform: scale(1.25) translateY(-10%);
     }
     .favorite-btn svg, .favorite-toggle-btn svg {
       width: 1em; height: 1em;
@@ -280,16 +280,16 @@
     .url-link-area {
       position: relative;
       display: flex;
-      align-items: center;
+      align-items: flex-start; /* 変更: 中身を上揃えに */
       gap: 18px;
       background: #f6f8fa;
       border-radius: 7px;
-      min-height: 54px;
+      /* min-height: 54px; を削除 */
       margin-bottom: 0;
       text-decoration: none;
       color: inherit;
       box-shadow: 0 1px 4px #0001;
-      padding: 8px 12px 8px 8px;
+      padding: 12px; /* パディングを調整 */
       transition: background 0.15s, box-shadow 0.15s;
     }
     .url-link-area:hover {
@@ -305,12 +305,13 @@
       box-shadow: 0 2px 12px #eeeeee22;
     }
     .url-thumb {
-      width: 44px; height: 44px;
+      width: 65px; height: 65px;
       object-fit: cover;
       border-radius: 7px;
       background: #eee;
       box-shadow: 0 1px 4px #0001;
       margin-right: 2px;
+      margin-top: 3px;
     }
     .url-info {
       flex: 1 1 auto;
@@ -321,16 +322,15 @@
       font-weight: bold;
       font-size: 1.06em;
       margin-bottom: 2px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+      white-space: normal; /* 変更: テキストの折り返しを許可 */
+      word-break: break-word; /* 追加: 長い単語でも折り返す */
     }
+
     .url-desc {
       font-size: 0.98em;
       color: #666;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+      white-space: normal; /* 変更: テキストの折り返しを許可 */
+      word-break: break-word; /* 追加: 長い単語でも折り返す */
     }
     body.dark .url-desc {
       color: #aaa;
@@ -461,6 +461,97 @@
       letter-spacing: 0.04em;
       line-height: 1.2;
     }
+    .tags-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 8px;
+    }
+    .tag-chip {
+      background: #e8e8e8;
+      color: #333;
+      font-size: 0.8em;
+      font-weight: 500;
+      padding: 3px 8px;
+      border-radius: 12px;
+      white-space: nowrap;
+    }
+    body.dark .tag-chip {
+      background: #3a414e;
+      color: #c9d1d9;
+    }
+    .filter-controls-area {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      justify-content: flex-end;
+      flex: 1 1 auto;
+    }
+    .tag-filter-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      position: relative;
+    }
+    .tag-filter-select {
+      font-size: 0.9em;
+      padding: 5px 8px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      background: #fff;
+    }
+    .tag-sort-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 1.7em;
+      color: #bbb;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      transition: color 0.2s, opacity 0.2s;
+    }
+    .tag-sort-btn.on {
+      color: #0984e3;
+      text-shadow: 0 0 6px #0984e355;
+    }
+    .tag-sort-btn svg {
+      width: 1em; height: 1em;
+      display: block;
+    }
+    body.dark .tag-filter-select {
+      background-color: #2d3139;
+      color: #eee;
+      border-color: #444;
+    }
+    body.dark .tag-sort-btn {
+      color: #666;
+    }
+    body.dark .tag-sort-btn.on {
+      color: #74b9ff;
+      text-shadow: 0 0 6px #74b9ff55;
+    }
+    /* --- 追加: パーティクルスタイル --- */
+    .particle {
+      position: absolute; /* 画面に固定表示 */
+      pointer-events: none; /* パーティクル自身はクリックできないように */
+      z-index: 9999;
+      width: 12px;
+      height: 12px;
+    }
+    .particle.parallelogram {
+      width: 10px;
+      height: 10px;
+      transform: skewX(-20deg); /* 平行四辺形 */
+    }
+    .particle.star svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+      filter: drop-shadow(0 0 2px rgba(0,0,0,0.5));
+    }
+
     @media (max-width: 900px) {
       .main-wrapper { max-width: 97vw; }
     }
@@ -470,13 +561,45 @@
       .main-title-row { gap: 12px; }
       .main-title-row .main-title-text { font-size: 1.7em; }
     }
+
+    .main-footer {
+        width: 100%;
+        max-width: 600px;
+        text-align: center;
+        color: #374151;
+        margin-top: 32px;
+        margin-bottom: 14px;
+        margin-left: auto;  /* 追加 */
+        margin-right: auto; /* 追加 */
+    }
+    .main-footer a {
+        color: #d8971d;
+        text-decoration: none;
+        transition: color 0.2s ease-in-out;
+        font-size: 0.9rem;
+    }
+    .main-footer a:hover {
+        color: #8a580c;
+        text-decoration: underline;
+    }
+    .footer-links {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 1.25rem;
+        margin-bottom: 0.2rem;
+    }
+    .footer-copyright {
+        font-size: 0.8rem;
+        color: #6b7280;
+    }
   </style>
 </head>
 <body>
   <div class="main-wrapper">
     <div class="main-title-row">
       <span class="main-title-favicon"><img src="https://www.google.com/favicon.ico" alt="オリジナルアイコン"></span>
-      <span class="main-title-text">shiumai_4 のリンク集</span>
+      <span class="main-title-text">shiumai_4 の作品集</span>
     </div>
     <div class="favicon-row" id="favicon-row"></div>
     <div class="topbar-flex">
@@ -505,6 +628,19 @@
     <button id="closeAllBtn">全て閉じる</button>
     <button id="toTopBtn">TOPへ</button>
   </div>
+
+    <footer class="main-footer">
+        <div class="footer-links">
+            <a href="https://example.com/portfolio" target="_blank" rel="noopener noreferrer">作品集</a>
+            <a href="https://x.com/your_x_handle" target="_blank" rel="noopener noreferrer">X</a>
+            <a href="https://example.com/privacy-policy" target="_blank" rel="noopener noreferrer">プライバシーポリシー</a>
+            <a href="https://example.com/contact" target="_blank" rel="noopener noreferrer">お問い合わせ</a>
+        </div>
+        <div class="footer-copyright">
+            ©︎2025 shiumai_4. All rights reserved.
+        </div>
+    </footer>
+
   <script>
     // --- データ定義 ---
     const favicons = [
@@ -513,7 +649,6 @@
       { url: "https://github.com/shiumai-4", favicon: "https://github.com/favicon.ico" },
       { url: "https://discord.gg/BFGAYAQS2P", favicon: "https://github.com/shiumai-4/my_hp/blob/b94331aa022a2b9c8b790b25e175a7d6b57d2f69/discord-icon-svgrepo-com.png?raw=true" },
       { url: "https://note.com/shiumai_4/portal", favicon: "https://note.com/favicon.ico" }
-      
     ];
     // 黄、緑、青、桃、赤、紫、白、水
     const genreColorClass = [ 'genre1', 'genre2', 'genre3', 'genre4', 'genre5', 'genre6', 'genre7', 'genre8' ];
@@ -526,25 +661,29 @@
             title: "マリンスイーパー",
             url: "https://docs.google.com/spreadsheets/d/1pc6tep0FldRxOvIFjf5cenNBfvXJA5FUc40w-EiWV1Y/edit?usp=sharing",
             thumb: "https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_92x30dp.png",
-            desc: "ホロライブ：宝鐘マリンをモチーフにした、マインスイーパー風のパズルゲーム。"
+            desc: "ホロライブ：宝鐘マリンをモチーフにした、マインスイーパー風のパズルゲーム。",
+            tags: ["パズル", "マインスイーパー", "ホロライブ"]
           },
           {
             title: "余の世直し大作戦！",
             url: "https://docs.google.com/spreadsheets/d/1jdo40wgqaHQlxlTb_mVWYd1yWsH5KMvk1gw2og5PagM/edit?usp=sharing",
             thumb: "https://www.bing.com/th?id=OHR.BingHomepage_FR-FR7279791497_1920x1080.jpg&rf=LaDigue_1920x1080.jpg&pid=hp",
-            desc: "ホロライブ：百鬼あやめをモチーフにした、ライツアウト風のパズルゲーム。"
+            desc: "ホロライブ：百鬼あやめをモチーフにした、ライツアウト風のパズルゲーム。",
+            tags: ["パズル", "ライツアウト", "ホロライブ"]
           },
           {
             title: "Tic Taco Toe Time!",
             url: "https://docs.google.com/spreadsheets/d/1UdjUmDLIAy6fGwMxcfQyxfyTPXXG0DEpWkTsoujeiJk/edit?usp=sharing",
             thumb: "https://www.bing.com/th?id=OHR.BingHomepage_FR-FR7279791497_1920x1080.jpg&rf=LaDigue_1920x1080.jpg&pid=hp",
-            desc: "ホロライブ：一伊那尓栖をモチーフにした、◯×ゲーム風のパズルゲーム。対戦もアリ"
+            desc: "ホロライブ：一伊那尓栖をモチーフにした、◯×ゲーム風のパズルゲーム。対戦もアリ",
+            tags: ["パズル", "〇×ゲーム", "対戦", "ホロライブ"]
           },
           {
             title: "凡骨危機一髪",
             url: "https://docs.google.com/spreadsheets/d/1Pke1rGn-JPKuRVROtK3x6OyqVY5vfzrdbw0zP2KRiwY/edit?usp=sharing",
             thumb: "https://www.bing.com/th?id=OHR.BingHomepage_FR-FR7279791497_1920x1080.jpg&rf=LaDigue_1920x1080.jpg&pid=hp",
-            desc: "遊戯王系Youtuberの凡骨突撃部隊をモチーフにした対戦型ゲーム。"
+            desc: "遊戯王系Youtuberの凡骨突撃部隊をモチーフにした対戦型ゲーム。",
+            tags: ["対戦", "Youtuber"]
           }
         ]
       },
@@ -556,25 +695,29 @@
             title: "ヘックスグリッドバトル",
             url: "https://shiumai-4.github.io/hexgridbattle/",
             thumb: "https://www.nicovideo.jp/favicon.ico",
-            desc: "攻撃カードが尽きないように敵を倒し続けるストラテジーゲーム。"
+            desc: "攻撃カードが尽きないように敵を倒し続けるストラテジーゲーム。",
+            tags: ["ストラテジー", "カードゲーム"]
           },
           {
             title: "EvoGame",
             url: "https://shiumai-4.github.io/EvoGame/",
             thumb: "https://www.nicovideo.jp/favicon.ico",
-            desc: "味方を消されないようにLv1000を目指す半放置シミュレーションゲーム。"
+            desc: "味方を消されないようにLv1000を目指す半放置シミュレーションゲーム。",
+            tags: ["シミュレーション", "放置ゲーム"]
           },
           {
             title: "Starmida",
             url: "https://shiumai-4.github.io/starmida/",
             thumb: "https://www.nicovideo.jp/favicon.ico",
-            desc: "星を同じ色の星まで辿り着かせるあみだくじ風パズルゲーム。"
+            desc: "星を同じ色の星まで辿り着かせるあみだくじ風パズルゲーム。",
+            tags: ["パズル", "あみだくじ"]
           },
           {
             title: "天秤とコインのゲーム",
             url: "https://shiumai-4.github.io/scales/",
             thumb: "https://www.nicovideo.jp/favicon.ico",
-            desc: "重さや素材の異なるコインを、天秤や電磁石を使って見つけるパズルゲーム。"
+            desc: "重さや素材の異なるコインを、天秤や電磁石を使って見つけるパズルゲーム。",
+            tags: ["パズル", "ロジック"]
           }
         ]
       },
@@ -586,23 +729,29 @@
             title: "クイズ：〇〇〇〇空後",
             url: "https://quiz-maker.site/quiz/play/oDJnNZ20250701025059",
             thumb: "https://quiz-maker.site/favicon.ico",
-            desc: "〇〇〇〇に当てはまる言葉を当てるクイズ。"
+            desc: "〇〇〇〇に当てはまる言葉を当てるクイズ。",
+            tags: ["クイズ"]
           },
           {
             title: "shiumai_4のリンク集",
             url: "https://shiumai-4.github.io/my_hp/",
             thumb: "https://www.nicovideo.jp/favicon.ico",
-            desc: "shiumai_4が作った色々な作品や関連するリンクを紹介するサイト。このページ。"
+            desc: "shiumai_4が作った色々な作品や関連するリンクを紹介するサイト。このページ。",
+            tags: ["ポートフォリオ"]
           }
         ]
       }
     ];
 
+    // --- 状態管理 ---
+    let expandedGenres = new Set();
+    let showFavOnly = false;
+    let showTagOnly = false;
+    let selectedTag = '';
+
     // --- お気に入り管理 ---
     function getFavorites() {
-      try {
-        return JSON.parse(localStorage.getItem('favorites') || '[]');
-      } catch { return []; }
+      try { return JSON.parse(localStorage.getItem('favorites') || '[]'); } catch { return []; }
     }
     function setFavorites(arr) {
       localStorage.setItem('favorites', JSON.stringify(arr));
@@ -637,40 +786,42 @@
       faviconRow.appendChild(a);
     });
 
-    // --- 展開状態管理 ---
-    let expandedGenres = new Set();
-
     // --- メインリスト描画 ---
     const container = document.getElementById('container');
-    let showFavOnly = false;
-
     function renderList() {
       const prevExpanded = new Set(expandedGenres);
-
       container.innerHTML = '';
       expandedGenres.clear();
+      
       const favs = getFavorites();
-      let _data = data;
+      let filteredData = JSON.parse(JSON.stringify(data));
+
+      // お気に入りフィルター
       if (showFavOnly) {
-        _data = data.map(group => {
-          const urls = group.urls.filter(item => favs.includes(item.url));
-          return {...group, urls};
+        filteredData = filteredData.map(group => {
+          group.urls = group.urls.filter(item => favs.includes(item.url));
+          return group;
         }).filter(group => group.urls.length > 0);
       }
-      _data.forEach((group, idx) => {
+      
+      // タグフィルター
+      if (showTagOnly && selectedTag) {
+         filteredData = filteredData.map(group => {
+          group.urls = group.urls.filter(item => item.tags && item.tags.includes(selectedTag));
+          return group;
+        }).filter(group => group.urls.length > 0);
+      }
+
+      filteredData.forEach((group, idx) => {
         const genreDiv = document.createElement('div');
         genreDiv.className = 'genre';
-
         const colorClass = group.colorClass || genreColorClass[idx % genreColorClass.length];
-
         const header = document.createElement('div');
         header.className = `genre-header ${colorClass}`;
         header.textContent = group.genre;
         header.setAttribute('data-idx', idx);
-
         const line = document.createElement('div');
         line.className = `genre-line ${colorClass}`;
-
         const urlList = document.createElement('div');
         urlList.className = 'url-list';
 
@@ -680,12 +831,10 @@
           urlLink.href = item.url;
           urlLink.target = '_blank';
           urlLink.rel = 'noopener noreferrer';
-
           const thumb = document.createElement('img');
           thumb.className = 'url-thumb';
           thumb.src = item.thumb;
           thumb.alt = 'thumbnail';
-
           const infoDiv = document.createElement('div');
           infoDiv.className = 'url-info';
           const title = document.createElement('div');
@@ -697,39 +846,51 @@
           infoDiv.appendChild(title);
           infoDiv.appendChild(desc);
 
+          if (item.tags && item.tags.length > 0) {
+            const tagsContainer = document.createElement('div');
+            tagsContainer.className = 'tags-container';
+            item.tags.forEach(tagText => {
+              const tagChip = document.createElement('span');
+              tagChip.className = 'tag-chip';
+              tagChip.textContent = tagText;
+              tagsContainer.appendChild(tagChip);
+            });
+            infoDiv.appendChild(tagsContainer);
+          }
+
           urlLink.appendChild(thumb);
           urlLink.appendChild(infoDiv);
-
           const favBtn = document.createElement('button');
           favBtn.type = 'button';
           favBtn.className = 'favorite-btn' + (isFaved(item.url) ? ' faved' : '');
           favBtn.title = isFaved(item.url) ? "お気に入り解除" : "お気に入り追加";
-          favBtn.innerHTML = `
-            <svg viewBox="0 0 24 24" fill="currentColor">
-              <path d="M12 17.77L5.18 21.5l1.31-7.66L1.5 9.97l7.76-1.13L12 2.5l2.74 6.34 7.76 1.13-5 4.87 1.31 7.66z"/>
-            </svg>
-          `;
+          favBtn.innerHTML = `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 17.77L5.18 21.5l1.31-7.66L1.5 9.97l7.76-1.13L12 2.5l2.74 6.34 7.76 1.13-5 4.87 1.31 7.66z"/></svg>`;
           favBtn.addEventListener('click', function(e) {
-            e.preventDefault();
-            e.stopPropagation();
+            e.preventDefault(); e.stopPropagation();
+            const isAdding = !isFaved(item.url); // ★トグル前に状態を確認
             toggleFav(item.url);
+
+            // ★お気に入り追加時のみパーティクルを起動
+            if (isAdding) {
+              launchParticles({ target: this });
+            }
+
             this.classList.toggle('faved', isFaved(item.url));
             this.title = isFaved(item.url) ? "お気に入り解除" : "お気に入り追加";
             updateFavToggleBtn();
+            if(showFavOnly) renderList();
           });
           urlLink.appendChild(favBtn);
-
           urlList.appendChild(urlLink);
         });
 
         genreDiv.appendChild(header);
         genreDiv.appendChild(urlList);
         genreDiv.appendChild(line);
-
         container.appendChild(genreDiv);
 
         const globalIdx = getGlobalGenreIndex(group.genre);
-        let shouldOpen = prevExpanded.has(globalIdx) || expandedGenres.has(globalIdx);
+        let shouldOpen = prevExpanded.has(globalIdx) || expandedGenres.has(globalIdx) || showFavOnly || showTagOnly;
 
         if (shouldOpen) {
           urlList.classList.add('open');
@@ -738,213 +899,253 @@
           header.classList.add('shrink');
           header.classList.add(colorClass);
           expandedGenres.add(globalIdx);
-
           urlList.addEventListener('transitionend', function handler(e) {
             if (e.propertyName === 'max-height' && urlList.classList.contains('open')) {
               urlList.style.maxHeight = "none";
               urlList.removeEventListener('transitionend', handler);
             }
           });
-        } else {
-          urlList.classList.remove('open');
-          urlList.style.opacity = 0;
-          urlList.style.maxHeight = "0";
-          header.classList.remove('shrink');
-          header.classList.remove(colorClass);
-          expandedGenres.delete(globalIdx);
         }
-
+        
         header.addEventListener('click', () => {
           const isOpen = urlList.classList.contains('open');
           if (isOpen) {
             urlList.style.maxHeight = urlList.scrollHeight + "px";
-            urlList.offsetHeight;
-            urlList.style.maxHeight = "0";
-            urlList.style.opacity = 0;
+            requestAnimationFrame(() => {
+              urlList.style.maxHeight = "0";
+              urlList.style.opacity = 0;
+            });
             urlList.classList.remove('open');
-            header.classList.remove('shrink');
-            header.classList.remove(colorClass);
+            header.classList.remove('shrink', colorClass);
             expandedGenres.delete(globalIdx);
           } else {
             urlList.classList.add('open');
-            urlList.style.opacity = 1;
             urlList.style.maxHeight = "0";
-            urlList.offsetHeight;
-            urlList.style.maxHeight = urlList.scrollHeight + "px";
-            header.classList.add('shrink');
-            header.classList.add(colorClass);
-            expandedGenres.add(globalIdx);
-
-            urlList.addEventListener('transitionend', function handler(e) {
-              if (e.propertyName === 'max-height' && urlList.classList.contains('open')) {
-                urlList.style.maxHeight = "none";
-                urlList.removeEventListener('transitionend', handler);
-              }
+            requestAnimationFrame(() => {
+              urlList.style.maxHeight = urlList.scrollHeight + "px";
+              urlList.style.opacity = 1;
             });
+            header.classList.add('shrink', colorClass);
+            expandedGenres.add(globalIdx);
           }
         });
       });
     }
 
     function getGlobalGenreIndex(genreName) {
-      for (let i = 0; i < data.length; ++i) {
-        if (data[i].genre === genreName) return i;
-      }
-      return -1;
+      return data.findIndex(group => group.genre === genreName);
     }
 
+    // --- フィルターUIのセットアップ ---
+    const favoriteToggleArea = document.querySelector('.favorite-toggle-area');
+    favoriteToggleArea.classList.add('filter-controls-area');
+    favoriteToggleArea.classList.remove('favorite-toggle-area');
+    
+    // タグフィルター
+    const tagFilterWrap = document.createElement('div');
+    tagFilterWrap.className = 'tag-filter-wrap';
+    
+    const tagSelect = document.createElement('select');
+    tagSelect.className = 'tag-filter-select';
+    
+    const allTags = new Set(data.flatMap(g => g.urls.flatMap(u => u.tags || [])));
+    tagSelect.innerHTML = '<option value="">全てのタグ</option>';
+    allTags.forEach(tag => {
+      tagSelect.innerHTML += `<option value="${tag}">${tag}</option>`;
+    });
+    
+    selectedTag = tagSelect.value;
+    tagSelect.addEventListener('change', (e) => {
+      selectedTag = e.target.value;
+      if (showTagOnly) renderList();
+    });
+
+    const tagSortBtn = document.createElement('button');
+    tagSortBtn.className = 'tag-sort-btn';
+    tagSortBtn.title = "タグで絞り込み";
+    tagSortBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M10 18h4v-2h-4v2zM3 6v2h18V6H3zm3 7h12v-2H6v2z"/></svg>`;
+    tagSortBtn.addEventListener('click', () => {
+      showTagOnly = !showTagOnly;
+      tagSortBtn.classList.toggle('on', showTagOnly);
+      renderList();
+    });
+    
+    tagFilterWrap.appendChild(tagSelect);
+    tagFilterWrap.appendChild(tagSortBtn);
+    favoriteToggleArea.prepend(tagFilterWrap);
+
+    // お気に入りフィルター
     const favToggleBtn = document.getElementById('favoriteToggleBtn');
     const favToggleWrap = document.getElementById('favToggleWrap');
     let favMsgBox = null;
 
     function updateFavToggleBtn() {
-      const favs = getFavorites();
       favToggleBtn.classList.toggle('on', showFavOnly);
-      favToggleBtn.title = favs.length === 0
-        ? "お気に入りがありません"
-        : "お気に入り表示切替";
-    }
-
-    function closeFavMsgBox() {
-      if (favMsgBox) {
-        favMsgBox.remove();
-        favMsgBox = null;
-        document.removeEventListener('mousedown', favMsgBoxOutsideListener, true);
-        document.removeEventListener('touchstart', favMsgBoxOutsideListener, true);
-        document.removeEventListener('keydown', favMsgBoxEscapeListener, true);
-      }
-    }
-    function favMsgBoxOutsideListener(e) {
-      if (favMsgBox && !favMsgBox.contains(e.target) && e.target !== favToggleBtn) {
-        closeFavMsgBox();
-      }
-    }
-    function favMsgBoxEscapeListener(e) {
-      if (e.key === "Escape") closeFavMsgBox();
     }
 
     favToggleBtn.addEventListener('click', (e) => {
-      e.preventDefault();
-      if (favMsgBox) {
-        closeFavMsgBox();
-        return;
-      }
-      favMsgBox = document.createElement('div');
-      favMsgBox.className = 'fav-message-box';
-      favMsgBox.tabIndex = -1;
-      const favs = getFavorites();
-      favMsgBox.innerHTML = `
-        <div class="fav-message-title">お気に入りを表示</div>
-        <div class="fav-message-btns">
-          <button class="fav-mode-btn${showFavOnly ? ' on' : ''}" data-mode="on"${favs.length === 0 ? ' disabled' : ''}>ソート</button>
-          <button class="fav-mode-btn${!showFavOnly ? ' on' : ''}" data-mode="off">解除</button>
-        </div>
-      `;
-      favToggleWrap.appendChild(favMsgBox);
-
-      const btnRect = favToggleBtn.getBoundingClientRect();
-      const wrapRect = favToggleWrap.getBoundingClientRect();
-      favMsgBox.style.left = (favToggleBtn.offsetLeft - favMsgBox.offsetWidth + favToggleBtn.offsetWidth) + "px";
-      favMsgBox.style.top = (favToggleBtn.offsetTop - favMsgBox.offsetHeight) + "px";
-      setTimeout(() => {
-        const boxRect = favMsgBox.getBoundingClientRect();
-        if (boxRect.top < 0) {
-          favMsgBox.style.top = (favToggleBtn.offsetTop + favToggleBtn.offsetHeight + 4) + "px";
-        }
-        if (boxRect.left < 0) {
-          favMsgBox.style.left = "0px";
-        }
-      }, 0);
-
-      setTimeout(()=>favMsgBox && favMsgBox.focus(), 10);
-
-      favMsgBox.querySelectorAll('.fav-mode-btn').forEach(btn => {
-        btn.addEventListener('click', (ev) => {
-          ev.preventDefault();
-          const mode = btn.getAttribute('data-mode');
-          const favs = getFavorites();
-          if (mode === "on" && favs.length === 0) return;
-          showFavOnly = (mode === 'on');
-          renderList();
-          updateFavToggleBtn();
-          closeFavMsgBox();
+      const isActivating = !showFavOnly; // ★トグル前に状態を確認
+      showFavOnly = !showFavOnly;
+      
+      // ★フィルター有効化時にお気に入りがあればパーティクル起動
+      if (isActivating && getFavorites().length > 0) {
+        launchParticles({
+          target: e.currentTarget,
+          shape: 'star',
+          count: getFavorites().length * 2,
+          spread: 220, // 上半分にランダム
+          startAngle: -220 // 左から右へ
         });
-      });
+      }
 
-      document.addEventListener('mousedown', favMsgBoxOutsideListener, true);
-      document.addEventListener('touchstart', favMsgBoxOutsideListener, true);
-      document.addEventListener('keydown', favMsgBoxEscapeListener, true);
+      updateFavToggleBtn();
+      renderList();
     });
 
+    // --- ボタンイベント ---
     document.getElementById('closeAllBtn').addEventListener('click', () => {
-      const openLists = Array.from(document.querySelectorAll('.url-list.open'));
-      if (openLists.length === 0) {
-        expandedGenres.clear();
-        renderList();
-        closeFavMsgBox();
-        return;
-      }
-      let finished = 0;
-      openLists.forEach(list => {
-        list.style.maxHeight = list.scrollHeight +"px";
-        list.offsetHeight;
-        list.style.maxHeight = "0";
-        list.style.opacity = "0";
-        list.classList.remove('open');
-        const genreDiv = list.parentElement;
-        const header = genreDiv.querySelector('.genre-header');
-        if (header) {
-          genreColorClass.forEach(c => header.classList.remove('shrink', c));
-        }
-        list.addEventListener('transitionend', function handler(e) {
-          if (e.propertyName === "max-height") {
-            finished++;
-            list.removeEventListener('transitionend', handler);
-            if (finished === openLists.length) {
-              expandedGenres.clear();
-              renderList();
-              closeFavMsgBox();
-            }
+      document.querySelectorAll('.url-list.open').forEach(list => {
+          const header = list.parentElement.querySelector('.genre-header');
+          list.style.maxHeight = "0";
+          list.style.opacity = "0";
+          list.classList.remove('open');
+          if (header) {
+              genreColorClass.forEach(c => header.classList.remove('shrink', c));
           }
-        });
       });
+      expandedGenres.clear();
     });
 
     document.getElementById('toTopBtn').addEventListener('click', () => {
       window.scrollTo({ top: 0, behavior: 'smooth' });
-      closeFavMsgBox();
     });
 
-    // --- ダークモード状態の保存と復元 ---
+    // --- ダークモード ---
     const darkToggle = document.getElementById('darkModeToggle');
-    // localStorageから状態を復元
     const darkMode = localStorage.getItem('darkMode') === 'true';
     document.body.classList.toggle('dark', darkMode);
     darkToggle.checked = darkMode;
-
     darkToggle.addEventListener('change', function() {
-      if (this.checked) {
-        document.body.classList.add('dark');
-        localStorage.setItem('darkMode', 'true');
-      } else {
-        document.body.classList.remove('dark');
-        localStorage.setItem('darkMode', 'false');
-      }
-      closeFavMsgBox();
+      document.body.classList.toggle('dark', this.checked);
+      localStorage.setItem('darkMode', String(this.checked));
     });
 
+    // --- 初期描画 ---
     renderList();
     updateFavToggleBtn();
 
     window.addEventListener('storage', () => {
       renderList();
       updateFavToggleBtn();
-      closeFavMsgBox();
-      // ダークモードも他タブで切り替えたら反映
-      const darkMode = localStorage.getItem('darkMode') === 'true';
-      document.body.classList.toggle('dark', darkMode);
-      darkToggle.checked = darkMode;
+      const newDarkMode = localStorage.getItem('darkMode') === 'true';
+      document.body.classList.toggle('dark', newDarkMode);
+      darkToggle.checked = newDarkMode;
     });
+
+    // --- 追加: パーティクルエフェクト ---
+    const particleContainer = document.createElement('div');
+    // コンテナにスタイルを適用し、描画領域を画面全体に固定
+    particleContainer.style.position = 'fixed';
+    particleContainer.style.top = '0';
+    particleContainer.style.left = '0';
+    particleContainer.style.width = '100vw';
+    particleContainer.style.height = '100vh';
+    particleContainer.style.pointerEvents = 'none';
+    particleContainer.style.zIndex = '9999';
+    document.body.appendChild(particleContainer);
+    let particles = [];
+
+    function launchParticles(options = {}) {
+      const {
+        target,
+        count = 5,
+        shape = 'parallelogram',
+        spread = 0, // 0 for fixed directions
+        startAngle = -85 // -90 is top, so -85 is top+5deg
+      } = options;
+
+      const rect = target.getBoundingClientRect();
+      const originX = rect.left + rect.width / 2;
+      const originY = rect.top + rect.height / 2;
+      const isDark = document.body.classList.contains('dark');
+      const baseHue = isDark ? 55 : 35; // 黄色 or オレンジ
+
+      for (let i = 0; i < count; i++) {
+        const p = document.createElement('div');
+        p.classList.add('particle', shape);
+        
+        const randomLightness = 50 + (Math.random() - 0.5) * 20; // 40-60%
+        const particleColor = `hsl(${baseHue + (Math.random() - 0.5) * 10}, 100%, ${randomLightness}%)`;
+
+        if (shape === 'star') {
+          const starSVG = `<svg viewBox="0 0 24 24" fill="${particleColor}"><path d="M12 17.77L5.18 21.5l1.31-7.66L1.5 9.97l7.76-1.13L12 2.5l2.74 6.34 7.76 1.13-5 4.87 1.31 7.66z"/></svg>`;
+          p.innerHTML = starSVG;
+        } else {
+          p.style.background = particleColor;
+        }
+        
+        particleContainer.appendChild(p);
+
+        const angle = (spread > 0) 
+          ? startAngle + Math.random() * spread 
+          : startAngle + i * (360 / count);
+          
+        const angleRad = angle * (Math.PI / 180);
+        const initialSpeed = 4 + Math.random() * 6;
+
+        particles.push({
+          el: p,
+          shape: shape, // 形状を保存
+          x: originX,
+          y: originY,
+          vx: Math.cos(angleRad) * initialSpeed,
+          vy: Math.sin(angleRad) * initialSpeed,
+          life: 1.2,
+          rotation: Math.random() * 360,
+          rotationSpeed: (Math.random() - 0.5) * 20,
+          gravity: 0.05,
+          friction: 0.96
+        });
+      }
+      if (particles.length > 0 && !animationRunning) {
+        runAnimation();
+      }
+    }
+
+    let animationRunning = false;
+    function runAnimation() {
+      animationRunning = true;
+      
+      particles = particles.filter(p => {
+        p.vx *= p.friction;
+        p.vy *= p.friction;
+        p.vy += p.gravity;
+        p.x += p.vx;
+        p.y += p.vy;
+        p.life -= 1 / 60;
+        p.rotation += p.rotationSpeed;
+
+        if (p.life <= 0) {
+          p.el.remove();
+          return false;
+        }
+        
+        // ★形状に応じてtransformを正しく設定
+        let transformString = `translate(${p.x}px, ${p.y}px) rotate(${p.rotation}deg)`;
+        if (p.shape === 'parallelogram') {
+          transformString += ' skewX(-20deg)';
+        }
+        p.el.style.transform = transformString;
+        p.el.style.opacity = Math.max(0, p.life / 1.5);
+        return true;
+      });
+
+      if (particles.length > 0) {
+        requestAnimationFrame(runAnimation);
+      } else {
+        animationRunning = false;
+      }
+    }
   </script>
 </body>
 </html>
